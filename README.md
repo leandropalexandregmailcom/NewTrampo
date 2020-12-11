@@ -1,2 +1,2 @@
-# New-trampo
+# NewTrampo
 Sistema de busca de empregos.
