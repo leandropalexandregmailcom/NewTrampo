@@ -62,28 +62,26 @@ class VagaController extends Controller
 
     public function editar_vaga(Request $request)
     {
-        $areaDao = new AreaDao();
-        $area = $areaDao->listar();
+        $cargoDao = new CargoDao();
+        $cargo = $cargoDao->listar();
         $vaga = new Vaga();
         $vaga->setId($request->id);
         $vagaDao = new VagaDao();
 
         $editar = $vagaDao->editar($vaga);
 
-        return view('vaga/editarVaga')->with('vaga', $editar)->with('areas', $area);
+        return view('vaga/editarVaga')->with('vaga', $editar)->with('areas', $cargo);
     }
 
     public function atualizar_vaga(Request $request)
     {
         $rules  = array(
-            'area'      => 'required',
             'cargo'     => 'required',
             'descricao' => 'required',
             'validade'  => 'required'
         );
 
         $messages = array(
-            'area.required'	     => 'Campo área é obrigatório',
             'descricao.required' => 'Campo descrição é obrigatório',
             'cargo.required'     => 'Campo cargo é obrigatório',
             'validade.required'  => 'Campo validade é obrigatório',
@@ -133,7 +131,7 @@ class VagaController extends Controller
         $candidatoVaga->setEstado($processo->processo());
         $candidatoVaga->setEmpresa($vaga->id_empresa);
         $candidatoVaga->setStatus(1);
-        dd($candidatoVaga);
+
         $candidatoVagaDao = new CandidatoVagaDao();
 
         $candidato = $candidatoVagaDao->editar($candidatoVaga);
@@ -157,6 +155,7 @@ class VagaController extends Controller
         $estados = $estadoDao->listar();
 
         $candidato = new CandidatoVagaDao();
+
         $lista = $candidato->listar($vaga);
 
         return view('vaga/candidato_vaga')->with('lista', $lista)->with('estados', $estados);

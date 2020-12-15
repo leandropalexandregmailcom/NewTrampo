@@ -27,11 +27,6 @@ class AreaDao extends Model implements IAreaDao
         return $this->hasOne('App\VagaDao', 'area', 'id_area');
     }
 
-    public function cargo()
-    {
-        return $this->hasMany('App\CargoDao', 'id_area', 'id_area');
-    }
-
     public function criar(Area $area)
     {
         $areaDao = new AreaDao();

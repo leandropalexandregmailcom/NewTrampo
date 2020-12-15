@@ -58,11 +58,11 @@ Route::group(['middleware' => 'web', 'middleware' => 'empresa'], function()
     Route::get('/editar_vaga', 'VagaController@editar_vaga')->name('editar_vaga');
     Route::get('/descartar_candidato', 'VagaController@descartar_candidato')->name('descartar_candidato');
     Route::post('/atualizar_vaga', 'VagaController@atualizar_vaga')->name('atualizar_vaga');
-    Route::get('/excluir_vaga', 'VagaController@fechar_vaga')->name('excluir_vaga');
+    Route::post('/excluir_vaga', 'VagaController@fechar_vaga')->name('excluir_vaga');
 
     //relatórios
     Route::get('/relatorio_candidato_vaga', 'RelatorioController@relatorio_candidato_vaga')->name('relatorio_candidato_vaga');
-    Route::get('/resultado_candidato_vaga', 'RelatorioController@resultado_candidato_vaga')->name('resultado_candidato_vaga');
+    Route::get('resultado_candidato_vaga', 'RelatorioController@resultado_candidato_vaga')->name('resultado_candidato_vaga');
 
     //estado
     Route::get('/mudar_estado', 'EstadoController@mudar_estado')->name('mudar_estado');

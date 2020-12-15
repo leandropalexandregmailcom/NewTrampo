@@ -32,7 +32,7 @@
                                         <td>@if($vaga->cargo){{ $vaga->cargo->nome }}@else --- @endif</td>
                                         <td><a style = "    margin-left: 30%; float: left;" class = "btn btn-warning" href = "{{ route('candidato_vaga') }}?id={{ $vaga->id }}">Candidatos</a>
                                         <a style = "float: left;" class = "btn btn-success" href = "{{ route('editar_vaga') }}?id={{ $vaga->id }}">Editar</a>
-                                        <a style = "float: left;" class = "btn btn-danger" href = "{{ route('excluir_vaga') }}?id={{ $vaga->id }}">Excluir</a>
+                                        <button id = "excluir" value = "{{ $vaga->id }}"  style = "float: left;" class = "btn btn-danger">Finalizar</button>
                                     </td>
                                     </tr>
                                 @endforeach
@@ -46,4 +46,24 @@
         </div>
     </div>
 </div>
+<script>
+    $(document).on('click', '#excluir', function(data)
+    {
+        var id = $(this).val()
+console.log(id)
+        $.ajax({
+            headers : {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+            url : 'excluir_vaga',
+            type: 'post',
+            data: {id : id}
+        }).done(function(response)
+        {
+            console.log(response)
+        }).fail(function(response)
+        {
+            console.log(response)
+        })
+    })
+
+</script>
 @endsection

@@ -20,7 +20,12 @@ class CandidatoVagaDao extends Model implements ICandidatoVagaDao
 
     public function candidato()
     {
-        return $this->hasOne('App\CandidatoDao', 'id_candidato', 'id_candidato');
+        return $this->hasOne('App\User', 'id', 'id_candidato');
+    }
+
+    public function state()
+    {
+        return $this->hasOne('App\EstadoDao', 'id_estado', 'estado');
     }
 
     public function vaga()
@@ -84,9 +89,17 @@ class CandidatoVagaDao extends Model implements ICandidatoVagaDao
             'id_empresa'   => $candidato['empresa'],
         );
         $candidatoVagaDao = CandidatoVagaDao::where($where)->first();
-dd($candidatoVagaDao);
-        $candidatoVagaDao->id_vaga = $candidato["vaga"];
-        dd($candidatoVagaDao);
+        $candidatoVagaDao->estado = $candidato["estado"];
+
+        $user = User::where(['id' => $candidatoVagaDao->id_candidato])->first();
+
+        Mail::send('mail.candidata', ['candidato' => 'vaga'], function($m) use ($user)
+        {
+            $m->from('leandro.p.alexandre@gmail.com', 'Leandro');
+            $m->to($user->email);
+            $m->subject('Estado da candidatura atualizado');
+        });
+
         $candidatoVagaDao->save();
 
         return true;
@@ -95,14 +108,15 @@ dd($candidatoVagaDao);
     public function listar(CandidatoVaga $vaga)
     {
         $where = array(
-            'status'  => 1,
-            'id_vaga' => $vaga->getVaga(),
+            'status'     => 1,
+            'id_vaga'    => $vaga->getVaga(),
+            'id_empresa' => Auth::user()->id
         );
 
         $candidatoVagaDao = CandidatoVagaDao::where($where)
         ->with(['candidato' => function($query)
         {
-            $query->where(['status' => 1])->with('user');
+            $query->where(['status' => 1])->with('candidato');
         }])
         ->with(['vaga' => function($query)
         {
@@ -123,10 +137,9 @@ dd($candidatoVagaDao);
     //     return $resultado;
     // }
 
-    public function relatorio_candidato_vaga($init, $final, $vaga)
+    public function relatorio_candidato_vaga($init, $final)
     {
-        $resultado = CandidatoVagaDao::where(['id_vaga' => $vaga])
-        ->where('create_date', '>=', $init)
+        $resultado = CandidatoVagaDao::where('create_date', '>=', $init)
         ->where('update_date', '<=', $final)
         ->with('candidato')
         ->paginate(10);

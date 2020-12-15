@@ -35,7 +35,6 @@ class EstadoController extends Controller
             'empresa'   => Auth::user()->id,
             'candidato' => $request->id_candidato,
         );
-dd($candidatoVaga);
         $CandidatoVaga = new CandidatoVagaDao();
         $response = $CandidatoVaga->atualizar($candidatoVaga);
 

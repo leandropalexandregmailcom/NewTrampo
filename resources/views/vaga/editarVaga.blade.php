@@ -25,8 +25,8 @@
                             <div class="col-md-6">
                                 <select id="area" type="text" class="form-control " name="area" value="{{ old('area') }}" required autofocus>
                                     @foreach($areas as $area)
-                                        <option value = "{{ $area->id_area }}" @if($vaga->area == $area->id_area) selected @endif>
-                                            {{ $area->nome }}
+                                        <option value = "{{ $area->id_cargo }}" @if($vaga->area == $area->id_cargo) selected @endif>
+                                            //{{ $area->nome }}
                                         </option>
                                     @endforeach
                                 </select>

@@ -28,8 +28,12 @@
                             <tbody>
                                 @foreach($vagas as $vaga)
                                     <tr>
-                                        <td>{{ $vaga->cargo->area->nome }}</td>
-                                        <td>{{ $vaga->cargo->nome }}</td>
+                                        <td>{{ $vaga->nome }}</td>
+                                        @if($vaga->cargo)
+                                            <td>{{ $vaga->cargo->nome }}</td>
+                                        @else
+                                        <td> --- </td>
+                                        @endif
                                         <td><a id = "candidatar" class = "btn btn-primary" href = "{{ route('candidatar_vaga') }}?id_vaga={{ $vaga->id }}">Candidatar-se</a>
                                             <a href = "{{ route('detalhe_vaga') }}?id_vaga={{ $vaga->id }}" class = "btn btn-warning">Detalhes</a>
                                         </td>

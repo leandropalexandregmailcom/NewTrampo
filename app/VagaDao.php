@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use App\Classes\Vaga;
 use App\Interfaces\IVagaDao;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Database\Eloquent\Model;
 
 class VagaDao extends Model implements IVagaDao
@@ -53,7 +54,20 @@ class VagaDao extends Model implements IVagaDao
         );
         VagaDao::where($where)->update(['status' => 0]);
 
-        CandidatoVagaDao::where(['id_vaga' => $vaga->getId()])->update(['status' => 0]);
+        $result = CandidatoVagaDao::where(['id_vaga' => $vaga->getId()])->get();
+
+        foreach($result as $data )
+        {
+            $user = User::where(['id' => $data->id_candidato])->first();
+            Mail::send('mail.candidata', ['candidato' => 'vaga'], function($m) use ($user)
+            {
+                $m->from('leandro.p.alexandre@gmail.com', 'Leandro');
+                $m->to($user->email);
+                $m->subject('Novo candidato');
+            });
+            $data->status = 0;
+            $data->save();
+        }
 
         return true;
     }
@@ -77,7 +91,6 @@ class VagaDao extends Model implements IVagaDao
 
         $VagaDao->validade = $vaga->getValidade();
         $VagaDao->id_cargo = $vaga->getCargo();
-        $VagaDao->area = $vaga->getArea();
         $VagaDao->descricao = $vaga->getDescricao();
 
         $VagaDao->save();
@@ -119,21 +132,21 @@ class VagaDao extends Model implements IVagaDao
 
     public function relatorio_candidato($init, $final)
     {
-       $areas = AreaDao::where(['id_area' => Auth::user()->candidato->area])->with(['vaga' => function($query)
-       {
-           $query->where(['status' => 1]);
-       }])
-       ->where('create_date', '>=', $init)
-       ->where('update_date', '<=', $final)->with('vaga')->paginate(10);
+        $candidatoVagaDao = CandidatoVagaDao::where('create_date', '>=', $init)
+        ->where('update_date', '<=', $final)
+        ->where(['id_candidato' => Auth::user()->id])->with('candidato')->with('vaga')->with('state')->paginate(10);
 
-       return $areas;
+        return $candidatoVagaDao;
     }
 
     public function relatorio_candidato_area($init, $final)
     {
-       $vagas = VagaDao::where(['area' => Auth::user()->candidato->area, 'status' => 1])
+        $cargoDao = CargoDao::where(['status' => 1, 'id_area' => Auth::user()->candidato->area])->get();
+       $vagas = VagaDao::where(['status' => 1])
        ->where('create_date', '>=', $init)
-       ->where('update_date', '<=', $final)->paginate(10);
+       ->where('update_date', '<=', $final)
+       ->with('cargo')->paginate(10);
+
 
        return $vagas;
     }

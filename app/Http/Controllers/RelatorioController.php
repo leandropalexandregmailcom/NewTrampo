@@ -108,6 +108,17 @@ class RelatorioController extends Controller
 
     public function resultado_candidato_area(Request $request)
     {
+        $rules  = array(
+            'inicial'   => 'required',
+            'final'     => 'required',
+        );
+
+        $messages = array(
+            'inicial.required' => 'Campo data inicial é obrigatório',
+            'final.required'   => 'Campo data final é obrigatório',
+        );
+        $this->validate($request, $rules, $messages);
+
         $request->inicial = str_replace("-", "/", $request->inicial);
         $request->final = str_replace("-", "/", $request->final);
 

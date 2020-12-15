@@ -25,7 +25,11 @@
                             @foreach($resultado as $result)
                                 <tr>
                                     <td>{{ $count }}</td>
-                                    <td>{{ $result->cargo->nome }}</td>
+                                    @if($result->cargo)
+                                    <td> {{  $result->cargo->nome   }} </td>
+                                    @else
+                                    <td> ---  </td>
+                                    @endif
                                     <td>{{ date('d/m/Y', strtotime($result->create_date)) }}
                                     </td>
                                 </tr>

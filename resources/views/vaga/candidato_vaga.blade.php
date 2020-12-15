@@ -24,9 +24,9 @@
                         @foreach($lista as $list)
                             @if($list->candidato)
                                 <tr>
-                                    <td>{{ $list->candidato->user->name }}</td>
-                                    <td>{{ $list->candidato->user->email }}</td>
-                                    <td>{{ $list->candidato->profissao }}</td>
+                                    <td>{{ $list->candidato->name }}</td>
+                                    <td>{{ $list->candidato->email }}</td>
+                                    <td>{{ $list->candidato->candidato->profissao }}</td>
                                     <td><a href = "">Currículo</a></td>
                                     <td>
                                         <select id = "estado" name = "estado" class = "form-control">
@@ -65,10 +65,7 @@
             data: {id_estado : id_estado,  id_vaga: id_vaga, id_candidato: id_candidato}
         }).done(function(response)
         {
-           console.log(id_estado)
-           console.log(id_vaga)
-           console.log(id_candidato)
-
+            window.location.reload()
         }).fail(function(response)
         {
             console.log(response)
